@@ -1,0 +1,59 @@
+[project]
+name = "{{ project_name }}"
+version = "0.0.0"
+description = "{{ description }}"
+readme = "README.md"
+requires-python = ">={{ min_python_version }}"
+classifiers = [
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: {{ min_python_version }}",
+]
+dependencies = [
+{%- if has_cli %}
+    "typer>=0.21.1",
+{%- endif %}
+]
+
+[project.license]
+file = "LICENSE"
+
+[project.urls]
+Homepage = "https://github.com/{{ repo_owner }}/{{ project_name }}"
+Repository = "https://github.com/{{ repo_owner }}/{{ project_name }}"
+Issues = "https://github.com/{{ repo_owner }}/{{ project_name }}/issues"
+{% if has_cli %}
+[project.scripts]
+{{ project_name }} = "{{ package_name }}.cli:app"
+{% endif %}
+[build-system]
+requires = [
+    "hatchling>=1.27.0",
+]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = [
+    "src/{{ package_name }}",
+]
+
+[tool.coverage.run]
+branch = true
+source = [
+    "{{ package_name }}",
+]
+
+[tool.coverage.report]
+fail_under = 100
+show_missing = true
+skip_covered = true
+
+[dependency-groups]
+dev = [
+    "pytest>=9.0.2",
+    "pytest-cov>=6.0.0",
+    "ruff>=0.9.10",
+    "tomli-w>=1.0.0",
+    "ty>=0.0.14",
+]

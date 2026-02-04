@@ -1,0 +1,40 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["{{ min_python_version }}"{% if min_python_version != "3.14" %}, "3.14"{% endif %}]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: {% raw %}${{ matrix.python-version }}{% endraw %}
+      - uses: astral-sh/setup-uv@v5
+      - name: Install dependencies
+        run: uv sync --dev
+      - name: Run tests
+        run: make test
+      # CHANGE ME: Uncomment after setting up codecov
+      # - name: Upload coverage reports to Codecov
+      #   uses: codecov/codecov-action@v5
+      #   with:
+      #     token: {% raw %}${{ secrets.CODECOV_TOKEN }}{% endraw %}
+      #     files: coverage.xml
+      #     fail_ci_if_error: true
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-xml-{% raw %}${{ matrix.python-version }}{% endraw %}
+          path: coverage.xml
+      - name: Run type checks
+        run: uv run ty check
+      - name: Run ruff
+        run: uv run ruff check .
