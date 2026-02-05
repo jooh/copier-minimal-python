@@ -1,0 +1,12 @@
+[project]
+name = "copier-minimal-python"
+version = "0.1.0"
+description = "A minimal copier template for Python projects"
+requires-python = ">=3.12"
+
+[dependency-groups]
+dev = [
+    "copier>=9.0.0",
+    "jinja2-time>=0.2.0",
+    "pytest>=8.0.0",
+]
