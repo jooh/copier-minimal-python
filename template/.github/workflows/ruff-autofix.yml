@@ -5,6 +5,10 @@ on:
     branches:
       - "**"
 
+concurrency:
+  group: ruff-autofix-{% raw %}${{ github.ref }}{% endraw %}
+  cancel-in-progress: true
+
 permissions:
   contents: write
 
